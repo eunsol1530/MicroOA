@@ -68,8 +68,8 @@ public partial class Views_home_PendingMyApproval : System.Web.UI.Page
     protected string GetPendingMyApprovalList(string FCID)
     {
         string flag = string.Empty;
-        string _sql = "  select FormID,FormName,ShortTableName from Forms where Invalid=0 and Del=0 and FCID=" + FCID.toInt() + " order by Sort";
-        DataTable _dt = MsSQLDbHelper.Query(_sql).Tables[0];
+        string _sql = "  select FormID,FormName,ShortTableName from Forms where Invalid=0 and Del=0 and FCID=@FCID order by Sort";
+        DataTable _dt = MsSQLDbHelper.Query(_sql, new SqlParameter("@FCID", FCID.toInt())).Tables[0];
 
         if (_dt != null && _dt.Rows.Count > 0)
         {
@@ -100,9 +100,9 @@ public partial class Views_home_PendingMyApproval : System.Web.UI.Page
                     //三阶 去除在任意审批阶段被驳回的记录 （注：申请、受理、结案不算审批阶段）
                     "and FormNumber not in(select FormNumber from FormApprovalRecords where FARID in (select max(FARID) from FormApprovalRecords where StateCode < 0 and Invalid = 0 and Del = 0 group by FormID,FormsID)) " +
                     //四阶 与我相关的
-                    "and CHARINDEX(',' + convert(varchar, " + UID + ") + ',',',' + CanApprovalUID + ',')> 0 and a.Invalid = 0 and a.Del = 0 and b.Invalid = 0 and b.Del = 0 and a.FormID=" + FormID.toInt() + "";
+                    "and CHARINDEX(',' + convert(varchar, " + UID + ") + ',',',' + CanApprovalUID + ',')> 0 and a.Invalid = 0 and a.Del = 0 and b.Invalid = 0 and b.Del = 0 and a.FormID=@FormID";
 
-                DataTable _dt2 = MsSQLDbHelper.Query(_sql2).Tables[0];
+                DataTable _dt2 = MsSQLDbHelper.Query(_sql2, new SqlParameter("@FormID", FormID.toInt())).Tables[0];
 
                 if (_dt2.Rows.Count > 0)
                 {

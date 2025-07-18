@@ -19,18 +19,18 @@ public partial class Views_Stats_Attendance_UserOnDuty : System.Web.UI.Page
     {
         //动作Action 可选值Add、Modify、View
         string Action = MicroPublic.GetFriendlyUrlParm(0);
-        txtAction.Value = Action;
+        txtAction.Value = HttpUtility.HtmlEncode(Action); // Encode to prevent XSS
 
         string ShortTableName = MicroPublic.GetFriendlyUrlParm(1);
-        txtShortTableName.Value = ShortTableName;
+        txtShortTableName.Value = HttpUtility.HtmlEncode(ShortTableName); // Encode to prevent XSS
 
         string ModuleID = MicroPublic.GetFriendlyUrlParm(2);
-        txtMID.Value = ModuleID;
+        txtMID.Value = HttpUtility.HtmlEncode(ModuleID); // Encode to prevent XSS
 
         string CurrDate = DateTime.Now.toDateFormat();
-        txtDateRange.Value = CurrDate.toDateMFirstDay() + " ~ " + CurrDate.toDateMLastDay();
+        txtDateRange.Value = HttpUtility.HtmlEncode(CurrDate.toDateMFirstDay() + " ~ " + CurrDate.toDateMLastDay()); // Encode to prevent XSS
 
-        divScript.InnerHtml = MicroForm.GetLayCheckBoxTpl(ShortTableName, ModuleID);
+        divScript.InnerHtml = HttpUtility.HtmlEncode(MicroForm.GetLayCheckBoxTpl(ShortTableName, ModuleID)); // Encode to prevent XSS
 
         //检查是否已经登录和页面唯一识别是否一致（ShortTableName）
         MicroAuth.CheckAuth(ModuleID, ShortTableName);
@@ -76,8 +76,12 @@ public partial class Views_Stats_Attendance_UserOnDuty : System.Web.UI.Page
             else  //只能查看自己时也列出自部门的父部门，便于生成菜单 
                 DeptIDs = MicroUserInfo.GetUserInfo("ParentDeptsID") + "," + MicroUserInfo.GetUserInfo("SubDeptsID");  //只能查看自部门时也一样。
 
-            string _sql = "select * from Department where Invalid=0 and Del=0 and DeptID in (" + DeptIDs + ")";
-            DataTable _dt = MicroDBHelper.MsSQLDbHelper.Query(_sql).Tables[0];  //得到_dt作为自定义DataTable通过MicroDataTable.GetDataTable方法进行查询记录（该方法的特点如是有父记录的表会追加MainSub等相关属性返回）
+            // Use parameterized query to prevent SQL Injection
+            string _sql = "select * from Department where Invalid=0 and Del=0 and DeptID in (@DeptIDs)";
+            var parameters = new SqlParameter[] {
+                new SqlParameter("@DeptIDs", DeptIDs)
+            };
+            DataTable _dt = MicroDBHelper.MsSQLDbHelper.Query(_sql, parameters).Tables[0];  //得到_dt作为自定义DataTable通过MicroDataTable.GetDataTable方法进行查询记录（该方法的特点如是有父记录的表会追加MainSub等相关属性返回）
             if (_dt != null && _dt.Rows.Count > 0)
                 _dt = MicroDataTable.GetDataTable("Dept", true, _dt);
 
@@ -97,12 +101,12 @@ public partial class Views_Stats_Attendance_UserOnDuty : System.Web.UI.Page
                 int i = 0;
                 foreach (DataRow _dr in _rows)
                 {
-                    string MainSub = _dr["MainSub"].toStringTrim() == "Main" ? "" : _dr["MainSub"].toStringTrim() + " ",
-                     Name = _dr["DeptName"].toStringTrim(),
+                    string MainSub = HttpUtility.HtmlEncode(_dr["MainSub"].toStringTrim() == "Main" ? "" : _dr["MainSub"].toStringTrim() + " "),
+                     Name = HttpUtility.HtmlEncode(_dr["DeptName"].toStringTrim()),
                      Name2 = Name,
-                     AdDepartment = _dr["AdDepartment"].toStringTrim(),
-                     ParentID = _dr["ParentID"].toStringTrim(),
-                     ID = _dr["DeptID"].toStringTrim();
+                     AdDepartment = HttpUtility.HtmlEncode(_dr["AdDepartment"].toStringTrim()),
+                     ParentID = HttpUtility.HtmlEncode(_dr["ParentID"].toStringTrim()),
+                     ID = HttpUtility.HtmlEncode(_dr["DeptID"].toStringTrim());
 
                     //Name = _dr["MainSub"].toStringTrim() == "Main" ? "<b style=\"font-size:14px;\">" + Name + "</b>" : MainSub + Name;
 
@@ -130,7 +134,7 @@ public partial class Views_Stats_Attendance_UserOnDuty : System.Web.UI.Page
 
             flag = _li;
         }
-        catch (Exception ex) { flag = ex.ToString(); }
+        catch (Exception ex) { flag = HttpUtility.HtmlEncode(ex.ToString()); } // Encode to prevent XSS
 
         return flag;
 
@@ -164,8 +168,8 @@ public partial class Views_Stats_Attendance_UserOnDuty : System.Web.UI.Page
 
                 foreach (DataRow _dr in _rows)
                 {
-                    string Name = _dr["JobTitleName"].toStringTrim();
-                    string ID = _dr["JTID"].toStringTrim();
+                    string Name = HttpUtility.HtmlEncode(_dr["JobTitleName"].toStringTrim());
+                    string ID = HttpUtility.HtmlEncode(_dr["JTID"].toStringTrim());
 
                     _li += "<dd><a href=\"javascript:;\" class=\"micro-click\" micro-type=\"JTitle\" micro-id=\"" + ID + "\" data-type=\"GetUsers\">" + Name + "</a>";
 
@@ -185,7 +189,7 @@ public partial class Views_Stats_Attendance_UserOnDuty : System.Web.UI.Page
 
             flag = _li;
         }
-        catch (Exception ex) { flag = ex.ToString(); }
+        catch (Exception ex) { flag = HttpUtility.HtmlEncode(ex.ToString()); } // Encode to prevent XSS
         return flag;
 
     }
@@ -215,8 +219,8 @@ public partial class Views_Stats_Attendance_UserOnDuty : System.Web.UI.Page
 
             foreach (DataRow _dr in _rows)
             {
-                string Name = _dr["RoleName"].toStringTrim();
-                string ID = _dr["RID"].toStringTrim();
+                string Name = HttpUtility.HtmlEncode(_dr["RoleName"].toStringTrim());
+                string ID = HttpUtility.HtmlEncode(_dr["RID"].toStringTrim());
 
                 _li += "<dd><a href=\"javascript:;\" class=\"micro-click\" micro-type=\"Role\" micro-id=\"" + ID + "\" data-type=\"GetUsers\">" + Name + "</a>";
 

@@ -73,7 +73,7 @@
                   <i class="layui-icon layui-icon-notice"></i>    
                   <!-- 如果有新消息，则显示小圆点 -->
                   <%--<span class="layui-badge-dot"></span>--%>
-                  <span id="spanNotice"><%= Notice %></span>
+                  <span id="spanNotice"><%= HttpUtility.HtmlEncode(Notice) %></span>
                 </a>
               </li>
               <li style="left:12px;" class="layui-nav-item layui-hide-xs" lay-tips="配色方案" lay-unselect>

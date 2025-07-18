@@ -41,13 +41,13 @@ public partial class Views_Forms_HR_OvertimeFormList : System.Web.UI.Page
 
 
             var getFormAttr = MicroForm.GetFormAttr(ShortTableName, FormID);
-            spanTitle.InnerHtml = getFormAttr.FormName + getFormAttr.Description;  //表单名称和描述
+            spanTitle.InnerHtml = HttpUtility.HtmlEncode(getFormAttr.FormName + getFormAttr.Description);  //表单名称和描述
             spanWorkFlow.Visible = MicroAuth.CheckPermit(ModuleID, "3");  //是否显示修改流程
             string Note = getFormAttr.Note;
             if (!string.IsNullOrEmpty(Note))
             {
                 divNote.Visible = true;
-                spanNote.InnerHtml = Note;
+                spanNote.InnerHtml = HttpUtility.HtmlEncode(Note);
             }
 
             string FormsID = MicroPublic.GetFriendlyUrlParm(4);
@@ -152,9 +152,13 @@ public partial class Views_Forms_HR_OvertimeFormList : System.Web.UI.Page
 
             //判断草稿箱是否有记录，若有记录要先处理掉才能进行新增操作
             string UID = MicroUserHelper.MicroUserInfo.GetUserInfo("UID");
-            string _sql = "select * from HROvertime where Invalid=0 and Del=0 and StateCode>=-4 and StateCode<=-1 and UID=" + UID.toInt() + " and OvertimeTypeID=(select OvertimeTypeID from HROvertimeType where Invalid=0 and Del=0 and FormID=@FormID)";
-            SqlParameter[] _sp = { new SqlParameter("@FormID", SqlDbType.Int) };
+            string _sql = "select * from HROvertime where Invalid=0 and Del=0 and StateCode>=-4 and StateCode<=-1 and UID=@UID and OvertimeTypeID=(select OvertimeTypeID from HROvertimeType where Invalid=0 and Del=0 and FormID=@FormID)";
+            SqlParameter[] _sp = {
+                new SqlParameter("@FormID", SqlDbType.Int),
+                new SqlParameter("@UID", SqlDbType.Int)
+            };
             _sp[0].Value = FormID.toInt();
+            _sp[1].Value = UID.toInt();
 
             DataTable _dt = MsSQLDbHelper.Query(_sql, _sp).Tables[0];
 

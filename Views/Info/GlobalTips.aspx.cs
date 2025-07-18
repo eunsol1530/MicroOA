@@ -44,8 +44,8 @@ public partial class Views_Info_GlobalTips : System.Web.UI.Page
                         if (!string.IsNullOrEmpty(MaxDateCreated) && DateCreated.toDateTime("yyyy-MM-dd") == MaxDateCreated.toDateTime("yyyy-MM-dd") && MicroPublic.GetMicroInfo("InfoNewTips").toBoolean())
                             NewTips = "<span class=\"layui-badge layui-bg-red\" style=\"border:none; margin-left:10px; \">新</span>";
 
-                        flag += "<li><a style=\"border: 1px solid #5FB878; background: none; color: #5FB878; font-size:10px; padding:1px 5px 1px 5px; border-radius:2px; margin-right:8px;\">" + _dt.Rows[i]["InfoClassName"].toStringTrim() + "</a>";
-                        flag += "<a href= \"/Views/Info/Detail/27/" + _dt.Rows[i]["InfoID"].toStringTrim() + "\" target= \"_blank\" >" + _dt.Rows[i]["Title"].toStringTrim() + "</a>" + NewTips + "<span style = \"position:absolute; right:20px;\">" + DateCreated.toDateFormat("yyyy-MM-dd HH:mm") + "</span>";
+                        flag += "<li><a style=\"border: 1px solid #5FB878; background: none; color: #5FB878; font-size:10px; padding:1px 5px 1px 5px; border-radius:2px; margin-right:8px;\">" + HttpUtility.HtmlEncode(_dt.Rows[i]["InfoClassName"].toStringTrim()) + "</a>";
+                        flag += "<a href= \"/Views/Info/Detail/27/" + HttpUtility.HtmlEncode(_dt.Rows[i]["InfoID"].toStringTrim()) + "\" target= \"_blank\" >" + HttpUtility.HtmlEncode(_dt.Rows[i]["Title"].toStringTrim()) + "</a>" + NewTips + "<span style = \"position:absolute; right:20px;\">" + DateCreated.toDateFormat("yyyy-MM-dd HH:mm") + "</span>";
                         flag += "</li>";
                     }
 

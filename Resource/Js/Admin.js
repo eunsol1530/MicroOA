@@ -15,7 +15,10 @@ function getRootPath() {
 //判断url是否在iframe打开
 if (window.frames.length == parent.frames.length) {
     //alert('不在iframe中' + window.document.location.href);
-    window.location.replace(getRootPath() + '/Views/Default?url=' + encodeURIComponent(window.document.location.href));
+    var currentUrl = window.document.location.href;
+    if (currentUrl.startsWith(getRootPath())) {
+        window.location.replace(getRootPath() + '/Views/Default?url=' + encodeURIComponent(currentUrl));
+    }
     //window.location.replace(getRootPath() + '/Views/Default?url=' + window.document.location.href);
 }
 

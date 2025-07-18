@@ -47,16 +47,22 @@ public partial class Views_Info_Detail : System.Web.UI.Page
         DataTable _dt = MsSQLDbHelper.Query(_sql, _sp).Tables[0];
 
         //得到当前用户角色
-        string _sqlUserRoles = "select * from UserRoles where Invalid=0 and Del=0 and UID=" + UID + "";
-        DataTable _dtUserRoles = MsSQLDbHelper.Query(_sqlUserRoles).Tables[0];
+        string _sqlUserRoles = "select * from UserRoles where Invalid=0 and Del=0 and UID=@UID";
+        SqlParameter[] _spUserRoles = { new SqlParameter("@UID", SqlDbType.Int) };
+        _spUserRoles[0].Value = UID;
+        DataTable _dtUserRoles = MsSQLDbHelper.Query(_sqlUserRoles, _spUserRoles).Tables[0];
 
         //得到当前用户职位
-        string _sqlJobTitle = "select * from UserJobTitle where Invalid=0 and Del=0 and UID=" + UID + "";
-        DataTable _dtJobTitle = MsSQLDbHelper.Query(_sqlJobTitle).Tables[0];
+        string _sqlJobTitle = "select * from UserJobTitle where Invalid=0 and Del=0 and UID=@UID";
+        SqlParameter[] _spJobTitle = { new SqlParameter("@UID", SqlDbType.Int) };
+        _spJobTitle[0].Value = UID;
+        DataTable _dtJobTitle = MsSQLDbHelper.Query(_sqlJobTitle, _spJobTitle).Tables[0];
 
         //得到当前用户部门
-        string _sqlUserDepts = "select * from UserDepts where Invalid=0 and Del=0 and UID=" + UID + "";
-        DataTable _dtUserDepts = MsSQLDbHelper.Query(_sqlUserDepts).Tables[0];
+        string _sqlUserDepts = "select * from UserDepts where Invalid=0 and Del=0 and UID=@UID";
+        SqlParameter[] _spUserDepts = { new SqlParameter("@UID", SqlDbType.Int) };
+        _spUserDepts[0].Value = UID;
+        DataTable _dtUserDepts = MsSQLDbHelper.Query(_sqlUserDepts, _spUserDepts).Tables[0];
 
         if (_dt.Rows.Count > 0)
         {

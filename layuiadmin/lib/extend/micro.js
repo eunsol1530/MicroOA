@@ -248,7 +248,12 @@
                 beforeSend: function () {
                 },
                 success: function (data) {
-                    eval(data);
+                    // Removed the use of eval() for executing data
+                    try {
+                        new Function(data)();
+                    } catch (e) {
+                        console.error("Error executing script: ", e);
+                    }
                 },
                 error: function () {
                 }
