@@ -20,7 +20,7 @@ public partial class Views_Forms_Forms : System.Web.UI.Page
         string ShortTableName = MicroPublic.GetFriendlyUrlParm(1);
         string ModuleID = MicroPublic.GetFriendlyUrlParm(2);
         txtMID.Value = ModuleID;
-        divScript.InnerHtml = MicroForm.GetLayCheckBoxTpl(ShortTableName, ModuleID);
+        divScript.InnerHtml = HttpUtility.HtmlEncode(MicroForm.GetLayCheckBoxTpl(ShortTableName, ModuleID));
 
         //检查是否已经登录和页面唯一识别是否一致（ShortTableName）
         MicroAuth.CheckAuth(ModuleID, ShortTableName);

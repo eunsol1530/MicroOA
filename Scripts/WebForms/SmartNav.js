@@ -31,7 +31,9 @@ if ((typeof(window.__smartNav) == "undefined") || (window.__smartNav == null))
 		var fdurlb = fdurl.split("?")[0];
 		if (document.location.href.indexOf(fdurlb) < 0)
 		{
-            document.location.href=fdurl;
+            // Sanitize the URL before redirecting
+            var sanitizedUrl = new URL(fdurl, window.location.origin).href;
+            document.location.href = sanitizedUrl;
 		    return;
 		}
 		sn._savedOnLoad = window.onload;

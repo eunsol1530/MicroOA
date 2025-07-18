@@ -309,7 +309,7 @@
 
             var parms = { "Val": uid, "TypeID": holidayTypeID, "Date": encodeURI(overtimeDate), "TypeName": holidayTypeName };
             $.getJSON('/Views/Forms/HR/GetLeaveTips.ashx', parms, function (data) {
-                $('#divShowLeave').html(data.Tips);
+                $('#divShowLeave').html(escapeHtml(data.Tips)); // Escape HTML special characters
                 $('#hidAvailableNumber').val(data.Days);
 
                 leaveDays = $('#selLeaveDays').val();
@@ -496,5 +496,15 @@
         mGet.setRemainingNumber(availableNumber, leaveDays);
 
     });
+
+    // Function to escape HTML special characters
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
 
 });

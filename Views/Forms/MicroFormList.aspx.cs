@@ -106,7 +106,7 @@ public partial class Views_Forms_MicroFormList : System.Web.UI.Page
 
             if (_dt != null && _dt.Rows.Count > 0)
             {
-                string QueryBaseDescription = _dt.Rows[0]["QueryBaseDescription"].toStringTrim();
+                string QueryBaseDescription = HttpUtility.HtmlEncode(_dt.Rows[0]["QueryBaseDescription"].toStringTrim());
                 if (!string.IsNullOrEmpty(QueryBaseDescription))
                 {
                     iconDescription.Visible = true;

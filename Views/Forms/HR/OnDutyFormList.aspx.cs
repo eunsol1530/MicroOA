@@ -39,7 +39,7 @@ public partial class Views_Forms_HR_OnDutyFormList : System.Web.UI.Page
 
 
         var getFormAttr = MicroForm.GetFormAttr(ShortTableName, FormID);
-        spanTitle.InnerHtml = getFormAttr.FormName + getFormAttr.Description;  //表单名称和描述
+        spanTitle.InnerHtml = HttpUtility.HtmlEncode(getFormAttr.FormName + getFormAttr.Description);  //表单名称和描述
         spanWorkFlow.Visible = MicroAuth.CheckPermit(ModuleID, "3");  //是否显示修改流程
         string Note = getFormAttr.Note;
         if (!string.IsNullOrEmpty(Note))
