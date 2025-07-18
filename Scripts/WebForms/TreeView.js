@@ -86,7 +86,9 @@ function TreeView_ProcessNodeData(result, context) {
         }
         else {
             table = WebForm_GetParentByTagName(treeNode, "TABLE");
-            table.insertAdjacentHTML("afterEnd", chunk);
+            // Sanitize the HTML chunk before inserting it
+            var sanitizedChunk = DOMPurify.sanitize(chunk);
+            table.insertAdjacentHTML("afterEnd", sanitizedChunk);
             newChildren = document.all[treeNode.id + "Nodes"];
         }
         if ((typeof(newChildren) != "undefined") && (newChildren != null)) {
