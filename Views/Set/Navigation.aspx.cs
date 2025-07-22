@@ -25,7 +25,7 @@ public partial class Views_Set_Navigation : System.Web.UI.Page
         var GetTableAttr = MicroDTHelper.MicroDataTable.GetTableAttr(MicroPublic.GetTableName(ShortTableName));
         txtPrimaryKeyName.Value = "data." + GetTableAttr.PrimaryKeyName;
 
-        divScript.InnerHtml = MicroForm.GetLayCheckBoxTpl(ShortTableName, ModuleID);
+        divScript.InnerHtml = HttpUtility.HtmlEncode(MicroForm.GetLayCheckBoxTpl(ShortTableName, ModuleID));
 
         //txtMID.Value = MicroPublic.GetFriendlyUrlParm(0);
         //divScript.InnerHtml = MicroForm.GetLayCheckBoxTpl("Mod");

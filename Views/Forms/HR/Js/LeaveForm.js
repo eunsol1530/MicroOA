@@ -309,7 +309,7 @@
 
             var parms = { "Val": uid, "TypeID": holidayTypeID, "Date": encodeURI(overtimeDate), "TypeName": holidayTypeName };
             $.getJSON('/Views/Forms/HR/GetLeaveTips.ashx', parms, function (data) {
-                $('#divShowLeave').html(data.Tips);
+                $('#divShowLeave').html(DOMPurify.sanitize(data.Tips)); // Sanitize the input before inserting into HTML
                 $('#hidAvailableNumber').val(data.Days);
 
                 leaveDays = $('#selLeaveDays').val();
@@ -346,7 +346,7 @@
         setLeaveEndDateTime: function (startDate, startTime, leaveDays, leaveHour, leaveUID) {
 
             var startDateTime = startDate + ' ' + startTime;
-            $.getJSON('/Views/Forms/HR/GetLeaveDateTime.ashx', { "StartDateTime": encodeURI(startDateTime), "LeaveDays": encodeURI(leaveDays), "LeaveHour": encodeURI(leaveHour), "LeaveUID": encodeURI(leaveUID) }, function (data) {
+            $..getJSON('/Views/Forms/HR/GetLeaveDateTime.ashx', { "StartDateTime": encodeURI(startDateTime), "LeaveDays": encodeURI(leaveDays), "LeaveHour": encodeURI(leaveHour), "LeaveUID": encodeURI(leaveUID) }, function (data) {
                 $('#txtEndDate').val(data[0].EndDate);
                 $('#txtEndTime').val(data[0].EndTime);
                 mGet.setHidStartEndDateTime(startDate, startTime, data[0].EndDate, data[0].EndTime);

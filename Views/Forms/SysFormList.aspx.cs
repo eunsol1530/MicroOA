@@ -25,7 +25,7 @@ public partial class Views_Forms_SysFormList : System.Web.UI.Page
         var GetTableAttr = MicroDTHelper.MicroDataTable.GetTableAttr(MicroPublic.GetTableName(ShortTableName));
         txtPrimaryKeyName.Value = "data." + GetTableAttr.PrimaryKeyName;
 
-        divScript.InnerHtml = MicroForm.GetLayCheckBoxTpl(ShortTableName, ModuleID);  //例FormAppType
+        divScript.InnerHtml = HttpUtility.HtmlEncode(MicroForm.GetLayCheckBoxTpl(ShortTableName, ModuleID));  //例FormAppType
 
         MicroAuth.CheckBrowse(ModuleID);
 

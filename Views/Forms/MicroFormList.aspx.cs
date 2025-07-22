@@ -89,7 +89,7 @@ public partial class Views_Forms_MicroFormList : System.Web.UI.Page
         }
 
         DataTable _dtForms = MicroDataTable.GetDataTable("Forms");
-        string LinkAddress = _dtForms.Select("FormID=" + FormID.toInt())[0]["LinkAddress"].toStringTrim();
+        string LinkAddress = HttpUtility.HtmlEncode(_dtForms.Select("FormID=" + FormID.toInt())[0]["LinkAddress"].toStringTrim());
         if (!string.IsNullOrEmpty(LinkAddress))
             txtLinkAddress.Value = LinkAddress;
 

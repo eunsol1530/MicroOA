@@ -31,7 +31,10 @@ if ((typeof(window.__smartNav) == "undefined") || (window.__smartNav == null))
 		var fdurlb = fdurl.split("?")[0];
 		if (document.location.href.indexOf(fdurlb) < 0)
 		{
-            document.location.href=fdurl;
+            // Ensure the URL is within the expected domain
+            if (fdurl.startsWith(window.location.origin)) {
+                document.location.href = fdurl;
+            }
 		    return;
 		}
 		sn._savedOnLoad = window.onload;

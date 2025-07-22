@@ -248,7 +248,12 @@
                 beforeSend: function () {
                 },
                 success: function (data) {
-                    eval(data);
+                    try {
+                        var parsedData = JSON.parse(data);
+                        // Process parsedData as needed
+                    } catch (e) {
+                        console.error("Failed to parse JSON data:", e);
+                    }
                 },
                 error: function () {
                 }

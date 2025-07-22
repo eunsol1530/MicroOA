@@ -63,12 +63,12 @@ public partial class Views_Info_List : System.Web.UI.Page
         if (InfoClassID.toInt() != 0)
         {
             //默认显示当前分类及所有子分类
-            InfoClassIDStr = " and InfoClassID in (select ICID from InformationClass where Invalid=0 and Del=0 and LevelCode like (select LevelCode+'%' from InformationClass where ICID=" + InfoClassID.toInt() + ")) ";
+            InfoClassIDStr = " and InfoClassID in (select ICID from InformationClass where Invalid=0 and Del=0 and LevelCode like (select LevelCode+'%' from InformationClass where ICID=@InfoClassID)) ";
 
             //如果设置为False时则仅显示当前分类
             Boolean InfoDisplayMode = MicroPublic.GetMicroInfo("InfoDisplayMode").toBoolean();
             if (!InfoDisplayMode)
-                InfoClassIDStr = " and InfoClassID in(select ICID from InformationClass where Invalid=0 and Del=0 and (ICID=" + InfoClassID.toInt() + " or ParentID=" + InfoClassID.toInt() + "))";
+                InfoClassIDStr = " and InfoClassID in(select ICID from InformationClass where Invalid=0 and Del=0 and (ICID=@InfoClassID or ParentID=@InfoClassID))";
         }
 
         else if (InfoClassID.toInt() == 0 && string.IsNullOrEmpty(Keyword))  //代表是打开首页
@@ -91,29 +91,33 @@ public partial class Views_Info_List : System.Web.UI.Page
 
         string _sql = "select a.*,b.InfoClassName,b.Description from Information a left join InformationClass b on a.InfoClassID=b.ICID where a.Del=0 " + Invalid + " and PushToInfoPlatform=1 " + InfoClassIDStr + KeywordQueryStr + " order by DateCreated desc";
 
-        SqlParameter[] _sp = { new SqlParameter("@Keyword", SqlDbType.NVarChar), };
+        SqlParameter[] _sp = {
+            new SqlParameter("@Keyword", SqlDbType.NVarChar),
+            new SqlParameter("@InfoClassID", SqlDbType.Int)
+        };
         _sp[0].Value = Keyword;
+        _sp[1].Value = InfoClassID.toInt();
 
         DataTable _dt = MsSQLDbHelper.Query(_sql, _sp).Tables[0];
         DataTable TargetDT = _dt.Clone();
 
         //得到当前用户角色
-        string _sqlUserRoles = "select * from UserRoles where Invalid=0 and Del=0 and UID=" + UID + "";
-        DataTable _dtUserRoles = MsSQLDbHelper.Query(_sqlUserRoles).Tables[0];
+        string _sqlUserRoles = "select * from UserRoles where Invalid=0 and Del=0 and UID=@UID";
+        DataTable _dtUserRoles = MsSQLDbHelper.Query(_sqlUserRoles, new SqlParameter[] { new SqlParameter("@UID", UID) }).Tables[0];
 
         //得到当前用户职位
-        string _sqlJobTitle = "select * from UserJobTitle where Invalid=0 and Del=0 and UID=" + UID + "";
-        DataTable _dtJobTitle = MsSQLDbHelper.Query(_sqlJobTitle).Tables[0];
+        string _sqlJobTitle = "select * from UserJobTitle where Invalid=0 and Del=0 and UID=@UID";
+        DataTable _dtJobTitle = MsSQLDbHelper.Query(_sqlJobTitle, new SqlParameter[] { new SqlParameter("@UID", UID) }).Tables[0];
 
         //得到当前用户部门
-        string _sqlUserDepts = "select * from UserDepts where Invalid=0 and Del=0 and UID=" + UID + "";
-        DataTable _dtUserDepts = MsSQLDbHelper.Query(_sqlUserDepts).Tables[0];
+        string _sqlUserDepts = "select * from UserDepts where Invalid=0 and Del=0 and UID=@UID";
+        DataTable _dtUserDepts = MsSQLDbHelper.Query(_sqlUserDepts, new SqlParameter[] { new SqlParameter("@UID", UID) }).Tables[0];
 
         if (_dt.Rows.Count > 0)
         {
             string MaxDateCreated = string.Empty;
             string _sqlMaxDateCreated = "select max(DateCreated) as DateCreated from Information where Invalid=0 and Del=0 and PushToInfoPlatform=1 " + InfoClassIDStr;  //加入只在首页显示的板块进行查询
-            DataTable _dtMaxDateCreated = MsSQLDbHelper.Query(_sqlMaxDateCreated).Tables[0];
+            DataTable _dtMaxDateCreated = MsSQLDbHelper.Query(_sqlMaxDateCreated, new SqlParameter[] { new SqlParameter("@InfoClassID", InfoClassID.toInt()) }).Tables[0];
 
             if (_dtMaxDateCreated.Rows.Count > 0)
                 MaxDateCreated = _dtMaxDateCreated.Rows[0]["DateCreated"].toStringTrim();
