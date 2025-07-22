@@ -345,9 +345,10 @@ public partial class Views_Forms_MicroFormApproval : System.Web.UI.Page
 
                 if (_dt2 != null && _dt2.Rows.Count > 0)
                 {
-                    string _sql3 = "select a.*,b.WFID ,b.FlowName ,b.FlowCode ,b.Alias ,b.EffectiveType ,b.EffectiveIDStr ,b.IsConditionApproval ,b.OperField ,b.Condition ,b.OperValue ,b.CustomConditions ,b.ApprovalType ,b.ApprovalIDStr ,b.ApprovalByIDStr ,b.IsSync ,b.Creator ,b.DefaultFlow ,b.FixedNode ,b.Invalid ,b.Del ,b.IsAccept ,b.ApproversSelectedByDefault ,b.ExtraFunction ,b.IsOptionalApproval ,b.IsSpecialApproval ,b.IsVerticalDirection ,b.Description from FormApprovalRecords a left join WorkFlow b on a.WorkFlowID=b.WFID where a.Invalid=0 and a.Del=0 and a.FormID = @FormID and a.FormsID in (" + FormsIDs + ") order by a.FormsID,a.Sort ";
-                    SqlParameter[] _sp3 = { new SqlParameter("@FormID", SqlDbType.Int) };
+                    string _sql3 = "select a.*,b.WFID ,b.FlowName ,b.FlowCode ,b.Alias ,b.EffectiveType ,b.EffectiveIDStr ,b.IsConditionApproval ,b.OperField ,b.Condition ,b.OperValue ,b.CustomConditions ,b.ApprovalType ,b.ApprovalIDStr ,b.ApprovalByIDStr ,b.IsSync ,b.Creator ,b.DefaultFlow ,b.FixedNode ,b.Invalid ,b.Del ,b.IsAccept ,b.ApproversSelectedByDefault ,b.ExtraFunction ,b.IsOptionalApproval ,b.IsSpecialApproval ,b.IsVerticalDirection ,b.Description from FormApprovalRecords a left join WorkFlow b on a.WorkFlowID=b.WFID where a.Invalid=0 and a.Del=0 and a.FormID = @FormID and a.FormsID in (SELECT value FROM STRING_SPLIT(@FormsIDs, ',')) order by a.FormsID,a.Sort ";
+                    SqlParameter[] _sp3 = { new SqlParameter("@FormID", SqlDbType.Int), new SqlParameter("@FormsIDs", SqlDbType.VarChar) };
                     _sp3[0].Value = FormID.toInt();
+                    _sp3[1].Value = FormsIDs;
 
                     DataTable _dt3 = MsSQLDbHelper.Query(_sql3, _sp3).Tables[0];
 

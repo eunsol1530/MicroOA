@@ -55,8 +55,10 @@ public partial class Views_Default : System.Web.UI.Page
                 }
 
                 //在线状态
-                string _sql2 = "select * from UserState where Invalid=0 and Del=0 and UID=" + UID;
-                DataTable _dt2 = MsSQLDbHelper.Query(_sql2).Tables[0];
+                string _sql2 = "select * from UserState where Invalid=0 and Del=0 and UID=@UID";
+                SqlParameter[] _sp2 = { new SqlParameter("@UID", SqlDbType.Int) };
+                _sp2[0].Value = UID.toInt();
+                DataTable _dt2 = MsSQLDbHelper.Query(_sql2, _sp2).Tables[0];
 
                 if (_dt2 != null && _dt2.Rows.Count > 0)
                 {

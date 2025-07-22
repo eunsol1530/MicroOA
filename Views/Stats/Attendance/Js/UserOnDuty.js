@@ -196,7 +196,7 @@
         },
 
         GetTable: function (v) {
-            v = v || eval('({\"code\": 0,\"msg\": \"数据读取失败<br/>データの読み込みに失敗しました<br/>Data reading failed\",\"count\":0,\"cols\":  [],\"data\":  [] })');
+            v = v || JSON.parse('{"code": 0,"msg": "数据读取失败<br/>データの読み込みに失敗しました<br/>Data reading failed","count":0,"cols":  [],"data":  [] }');
 
             table.render({
                 elem: '#tabTable'
@@ -209,7 +209,7 @@
                 , even: true
                 , height:'full-120'
                 , cellMinWidth: 60
-                , cols: [eval(v.cols)]
+                , cols: [JSON.parse(v.cols)]
                 , page: true
                 , limit: 100
                 , limits: [100,200,300,400,500,600,700,800,900,1000]

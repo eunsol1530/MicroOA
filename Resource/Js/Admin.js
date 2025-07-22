@@ -14,8 +14,12 @@ function getRootPath() {
 
 //判断url是否在iframe打开
 if (window.frames.length == parent.frames.length) {
-    //alert('不在iframe中' + window.document.location.href);
-    window.location.replace(getRootPath() + '/Views/Default?url=' + encodeURIComponent(window.document.location.href));
+    // Validate the URL to prevent Open Redirect
+    var currentUrl = window.document.location.href;
+    var allowedDomain = getRootPath();
+    if (currentUrl.startsWith(allowedDomain)) {
+        window.location.replace(getRootPath() + '/Views/Default?url=' + encodeURIComponent(currentUrl));
+    }
     //window.location.replace(getRootPath() + '/Views/Default?url=' + window.document.location.href);
 }
 

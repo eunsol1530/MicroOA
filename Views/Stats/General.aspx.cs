@@ -88,7 +88,7 @@ public partial class Views_Stats_General : System.Web.UI.Page
             if (!string.IsNullOrEmpty(Location))
             {
                 Location = Location.toStringTrim();
-                QueryFieldsStr = " and Location='" + Location + "'";
+                QueryFieldsStr = " and Location=@Location";
                 KeywordStr = "Location_" + Location + ",Keyword_";  //构成：Location-Test,Keyword-午餐
             }
 
@@ -98,15 +98,17 @@ public partial class Views_Stats_General : System.Web.UI.Page
                 OvertimeMealName = _dt.Rows[i]["OvertimeMealName"].toStringTrim(),
                 LayHref = string.Empty;
 
-                string _sql2 = " select OvertimeID,OvertimeMealID from HROvertime where Invalid=0 and Del=0 and ParentID<>0 and StateCode>=0 and CHARINDEX(','+convert(varchar," + OvertimeMealID.toInt() + ")+',',','+OvertimeMealID+',')>0 and OvertimeDate between @StartDate and @EndDate" + QueryFieldsStr;
+                string _sql2 = " select OvertimeID,OvertimeMealID from HROvertime where Invalid=0 and Del=0 and ParentID<>0 and StateCode>=0 and CHARINDEX(','+convert(varchar,@OvertimeMealID)+',',','+OvertimeMealID+',')>0 and OvertimeDate between @StartDate and @EndDate" + QueryFieldsStr;
 
                 SqlParameter[] _sp2 = { new SqlParameter("@Location",SqlDbType.NVarChar,1000),
-                                    new SqlParameter("@StartDate",SqlDbType.DateTime),
-                                    new SqlParameter("@EndDate",SqlDbType.DateTime),
-                                };
+                                        new SqlParameter("@OvertimeMealID",SqlDbType.Int),
+                                        new SqlParameter("@StartDate",SqlDbType.DateTime),
+                                        new SqlParameter("@EndDate",SqlDbType.DateTime),
+                                    };
                 _sp2[0].Value = Location.toStringTrim();
-                _sp2[1].Value = StartDate.toDateTime();
-                _sp2[2].Value = EndDate.toDateTime();
+                _sp2[1].Value = OvertimeMealID.toInt();
+                _sp2[2].Value = StartDate.toDateTime();
+                _sp2[3].Value = EndDate.toDateTime();
 
                 DataTable _dt2 = MsSQLDbHelper.Query(_sql2, _sp2).Tables[0];
 
@@ -167,7 +169,7 @@ public partial class Views_Stats_General : System.Web.UI.Page
             if (!string.IsNullOrEmpty(Location))
             {
                 Location = Location.toStringTrim();
-                QueryFieldsStr = " and Location='" + Location + "'";
+                QueryFieldsStr = " and Location=@Location";
                 KeywordStr = "Location_" + Location + ",Keyword_";  //构成：Location-Test,Keyword-午餐
             }
 
@@ -209,7 +211,7 @@ public partial class Views_Stats_General : System.Web.UI.Page
                     string _sql3 = "select * from UserInfo where Invalid=0 and Del=0 and (UserName like 'RL%' or UserName like 'J0%')" +  // like 'RL%' or 'J0%' 员工
 
                     //排除已写了排班申请的 但 不是GZ-平或WH-平 且不是取消班次的
-                    "and UID not in (select DutyUID from HROnDutyForm a where ParentID<>0 and Invalid = 0 and Del = 0 and StateCode>=0 and ShiftTypeID<>" + ShiftTypeID.toInt() + " and ShiftName<>'-' and DateCreated in (select max(b.DateCreated) from HROnDutyForm b where a.DutyUID = b.DutyUID and a.DutyDate = b.DutyDate) and DutyDate between @StartDate and @EndDate) " +
+                    "and UID not in (select DutyUID from HROnDutyForm a where ParentID<>0 and Invalid = 0 and Del = 0 and StateCode>=0 and ShiftTypeID<>@ShiftTypeID and ShiftName<>'-' and DateCreated in (select max(b.DateCreated) from HROnDutyForm b where a.DutyUID = b.DutyUID and a.DutyDate = b.DutyDate) and DutyDate between @StartDate and @EndDate) " +
 
                     //排除已休假的
                     "and UID not in (select LeaveUID from HRLeave where Invalid = 0 and Del = 0 and StateCode> 0 and StartDate<= @EndDate and EndDate>= @StartDate)" +
@@ -220,11 +222,13 @@ public partial class Views_Stats_General : System.Web.UI.Page
 
 
                     SqlParameter[] _sp3 = { 
+                                    new SqlParameter("@ShiftTypeID",SqlDbType.Int),
                                     new SqlParameter("@StartDate",SqlDbType.DateTime),
                                     new SqlParameter("@EndDate",SqlDbType.DateTime),
                                 };
-                    _sp3[0].Value = StartDate.toDateTime();
-                    _sp3[1].Value = EndDate.toDateTime();
+                    _sp3[0].Value = ShiftTypeID.toInt();
+                    _sp3[1].Value = StartDate.toDateTime();
+                    _sp3[2].Value = EndDate.toDateTime();
 
                     DataTable _dt3 = MsSQLDbHelper.Query(_sql3, _sp3).Tables[0];
 
